@@ -1,0 +1,5 @@
+This is the sample file I have created for Machine Learning.
+I am writing 5 lines to this file.
+This is for the homework 2 assignment.
+I am on my fourth line of text.
+This is the final line of text to input.
