@@ -20,6 +20,17 @@ class TextStatsTests(unittest.TestCase):
             {"lines": 0, "words": 0, "characters": 0},
         )
 
+    def test_top_words_are_case_insensitive_and_deterministic(self):
+        self.assertEqual(
+            text_stats("b a b a\n", top_n=2),
+            {
+                "lines": 1,
+                "words": 4,
+                "characters": 8,
+                "top_words": [{"word": "a", "count": 2}, {"word": "b", "count": 2}],
+            },
+        )
+
     def test_cli_prints_json_for_sample_file(self):
         project_root = Path(__file__).resolve().parent.parent
         result = subprocess.run(
@@ -33,6 +44,32 @@ class TextStatsTests(unittest.TestCase):
         self.assertEqual(
             json.loads(result.stdout),
             {"lines": 5, "words": 43, "characters": 208},
+        )
+
+    def test_cli_reports_top_words_for_sample_file(self):
+        project_root = Path(__file__).resolve().parent.parent
+        result = subprocess.run(
+            [sys.executable, "src/text_stats.py", "sample.txt", "--top", "5"],
+            cwd=project_root,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+
+        self.assertEqual(
+            json.loads(result.stdout),
+            {
+                "lines": 5,
+                "words": 43,
+                "characters": 208,
+                "top_words": [
+                    {"word": "this", "count": 4},
+                    {"word": "i", "count": 3},
+                    {"word": "is", "count": 3},
+                    {"word": "the", "count": 3},
+                    {"word": "am", "count": 2},
+                ],
+            },
         )
 
 
